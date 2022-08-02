@@ -11,7 +11,6 @@ RH_ASK driver(2000, 2, 4, 5);  // ESP8266 or ESP32: do not use pin 11 or 2
 /// Caution: on the tronixlabs breakout board, pins 4 and 5 may be labelled vice-versa.
 
 void setup() {
-  pinMode(D4, INPUT);
   Serial.begin(9600);  // Debugging only
   driver.init();
 }
