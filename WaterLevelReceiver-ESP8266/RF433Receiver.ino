@@ -21,9 +21,7 @@ void receive() {
   if (driver.recv(buf, &buflen))  // Non-blocking
   {
     Serial.print("received:");
-    for (int i = 0; i < buflen; i++) {
-      Serial.print(char(buf[i]));
-    }
+    Serial.print((char *)buf);
     Serial.println();
   } else {
   }

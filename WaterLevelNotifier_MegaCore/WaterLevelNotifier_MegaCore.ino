@@ -7,6 +7,7 @@ void example() {
 }
 
 void setup() {
+  Serial.begin(9600);
   pinMode(outPin, OUTPUT);
   rf_setup();
 }

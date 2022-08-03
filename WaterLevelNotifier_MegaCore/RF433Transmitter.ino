@@ -12,4 +12,6 @@ void rf_send() {
 
   driver.send((uint8_t *)msg, strlen(msg));
   driver.waitPacketSent();
+  Serial.print("sending complete:");
+  Serial.println(msg);
 }
