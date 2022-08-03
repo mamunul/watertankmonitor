@@ -1,6 +1,6 @@
 #include <RH_ASK.h>
 #include <SPI.h>
-RH_ASK driver;
+RH_ASK driver(2000, PIN_PB6, PIN_PB7, PIN_PD5);
 void rf_setup() {
 
   // Serial.begin(9600);  // Debugging only

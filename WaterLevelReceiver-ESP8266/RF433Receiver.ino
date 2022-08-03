@@ -4,7 +4,7 @@
 #endif
 
 // RH_ASK driver;
-RH_ASK driver(2000, 2, 4, 5);  // ESP8266 or ESP32: do not use pin 11 or 2
+RH_ASK driver(2000, D4, D2, D1);  // ESP8266 or ESP32: do not use pin 11 or 2
 /// RH_ASK driver(2000, 2, 4, 5);
 /// \endcode
 /// Which will initialise the driver at 2000 bps, recieve on GPIO2, transmit on GPIO4, PTT on GPIO5.
