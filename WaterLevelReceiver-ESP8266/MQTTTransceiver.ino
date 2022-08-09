@@ -23,16 +23,18 @@
 
 // Update these with values suitable for your network.
 
-const char* ssid = "........";
-const char* password = "........";
-const char* mqtt_server = "http://localhost";
-int server_port = 8581;
+const char* ssid = "Trekkers_Hut";
+const char* password = "Alcrai.Ace1992";
+// const char* mqtt_server = "192.168.1.234";
+const char* mqtt_server = "raspberrypi.local";
+// int server_port =  8581;
+int server_port = 1883;
+// int server_port = 51745;
 
 WiFiClient espClient;
 PubSubClient client(espClient);
 unsigned long lastMsg = 0;
-#define MSG_BUFFER_SIZE	(50)
-char msg[MSG_BUFFER_SIZE];
+int msg = 0;
 int value = 0;
 
 void setup_wifi() {
@@ -50,7 +52,6 @@ void setup_wifi() {
     delay(500);
     Serial.print(".");
   }
-
   randomSeed(micros());
 
   Serial.println("");
@@ -60,55 +61,40 @@ void setup_wifi() {
 }
 
 void callback(char* topic, byte* payload, unsigned int length) {
-  Serial.print("Message arrived [");
+  Serial.print("Message arrived on topic: ");
   Serial.print(topic);
-  Serial.print("] ");
+  Serial.print(". Message: ");
+  String messageTemp;
+  
   for (int i = 0; i < length; i++) {
     Serial.print((char)payload[i]);
+    messageTemp += (char)payload[i];
   }
   Serial.println();
-
-  // Switch on the LED if an 1 was received as first character
-  if ((char)payload[0] == '1') {
-    digitalWrite(LED_BUILTIN, LOW);   // Turn the LED on (Note that LOW is the voltage level
-    // but actually the LED is on; this is because
-    // it is active low on the ESP-01)
-  } else {
-    digitalWrite(LED_BUILTIN, HIGH);  // Turn the LED off by making the voltage HIGH
-  }
-
 }
 
 void reconnect() {
-  // Loop until we're reconnected
   while (!client.connected()) {
-    Serial.print("Attempting MQTT connection...");
-    // Create a random client ID
-    String clientId = "ESP8266Client-";
-    clientId += String(random(0xffff), HEX);
-    // Attempt to connect
+    byte mac[5];  // create client ID from mac address
+    WiFi.macAddress(mac);
+    Serial.println("Attempting MQTT connection...");
+    String clientId = "ESPClient8266";
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
-      // Once connected, publish an announcement...
-      client.publish("outTopic", "hello world");
-      // ... and resubscribe
-      client.subscribe("inTopic");
+      client.subscribe("homebridge/from/topics/geton");
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
-      Serial.println(" try again in 5 seconds");
-      // Wait 5 seconds before retrying
       delay(5000);
     }
   }
 }
 
 void mqtt_setup() {
-  pinMode(LED_BUILTIN, OUTPUT);     // Initialize the BUILTIN_LED pin as an output
-  Serial.begin(115200);
   setup_wifi();
   client.setServer(mqtt_server, server_port);
   client.setCallback(callback);
+  delay(1000);
 }
 
 void mqtt_loop() {
@@ -117,14 +103,4 @@ void mqtt_loop() {
     reconnect();
   }
   client.loop();
-
-  unsigned long now = millis();
-  if (now - lastMsg > 2000) {
-    lastMsg = now;
-    ++value;
-    snprintf (msg, MSG_BUFFER_SIZE, "hello world #%ld", value);
-    Serial.print("Publish message: ");
-    Serial.println(msg);
-    client.publish("outTopic", msg);
-  }
 }

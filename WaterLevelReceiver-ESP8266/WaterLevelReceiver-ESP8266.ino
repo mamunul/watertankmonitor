@@ -1,5 +1,5 @@
 void setup() {
-  Serial.begin(9600);  // Debugging only
+  Serial.begin(115200);  // Debugging only
   // setup_receiver();
   // setup_receiver_rf24();
   mqtt_setup();
