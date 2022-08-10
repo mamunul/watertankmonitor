@@ -13,6 +13,9 @@ unsigned long lastMsg = 0;
 int msg = 0;
 int value = 0;
 
+char* switchTopic = "topics/seton";
+char* onlineTopic = "topics/online";
+
 void setup_wifi() {
 
   delay(10);
@@ -55,10 +58,8 @@ void reconnect() {
   WiFi.mode(WIFI_STA);
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
-      client.publish("topics/startup", "starting");
-      bool status = client.subscribe("topics/seton");
-      Serial.print("subscribed:");
-      Serial.println(status);
+      client.publish(onlineTopic, "true");
+      bool status = client.subscribe(switchTopic);
     } else {
       Serial.print("failed, rc=");
       Serial.print(client.state());
