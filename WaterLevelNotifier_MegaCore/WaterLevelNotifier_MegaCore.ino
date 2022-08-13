@@ -1,17 +1,15 @@
-
 void setup() {
   Serial.begin(9600);
-  detector_setup();
-}
-
-
-void blink(int outPin) {
-  digitalWrite(outPin, HIGH);
-  delay(1000);
-  digitalWrite(outPin, LOW);
-  delay(1000);
+  rf_setup();
+  reader_setup();
 }
 
 void loop() {
-  check_water_level();
+  int level = readWaterLevel();
+  Serial.println(level);
+  char buffer [2];
+  itoa(level,buffer,10);
+  rf_send(buffer);
+  Serial.println(buffer);
+  delay(1000);
 }
