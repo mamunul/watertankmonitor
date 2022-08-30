@@ -7982,11 +7982,9 @@ BF959 corrected 2008.03.06&lt;br&gt;</description>
 <segment>
 <pinref part="SG1" gate="G$1" pin="1"/>
 <wire x1="99.06" y1="167.64" x2="63.5" y2="167.64" width="0.1524" layer="91"/>
-<wire x1="63.5" y1="167.64" x2="63.5" y2="149.86" width="0.1524" layer="91"/>
-<pinref part="NODE1" gate="G$1" pin="TX"/>
-<wire x1="63.5" y1="149.86" x2="60.96" y2="149.86" width="0.1524" layer="91"/>
-<junction x="63.5" y="149.86"/>
-<junction x="63.5" y="167.64"/>
+<wire x1="63.5" y1="167.64" x2="63.5" y2="177.8" width="0.1524" layer="91"/>
+<pinref part="NODE1" gate="G$1" pin="D1"/>
+<wire x1="63.5" y1="177.8" x2="60.96" y2="177.8" width="0.1524" layer="91"/>
 </segment>
 </net>
 <net name="N$1" class="0">

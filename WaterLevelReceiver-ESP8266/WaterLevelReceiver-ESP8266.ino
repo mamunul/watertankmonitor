@@ -5,14 +5,16 @@ int level4 = D5;
 int level5 = D3;
 
 int switchRelay = D0;
-int buzzerPin = GPIO_ID_PIN(1);
-
+int buzzerPin = D1;  //GPIO_ID_PIN(1);
+int buzzerFrequency = 784;
+bool switchOnStatus = false;
 void setup() {
-  // Serial.begin(115200);  // Debugging only
+  Serial.begin(115200);  // Debugging only
   showWaterLevelSetup();
   swtchSetup();
   setup_receiver();
-  // mqtt_setup();
+  mqtt_setup();
+  switchOnStatus = false;
 }
 
 void setup_buzzer() {
@@ -32,12 +34,22 @@ void swtchSetup() {
 }
 
 void switchEvent(int level) {
-  if (level & 0x1F) {
-    digitalWrite(switchRelay, LOW);
+  if (level == 0x1F) {
+    switchOff();
   } else if (level == 0) {
-    digitalWrite(switchRelay, HIGH);
-    buzz();
+    switchOn();
   }
+}
+
+void switchOff() {
+  digitalWrite(switchRelay, LOW);
+  noTone(buzzerPin);
+  switchOnStatus = false;
+}
+
+void switchOn() {
+  digitalWrite(switchRelay, HIGH);
+  switchOnStatus = true;
 }
 
 void updateWaterLevel(int level) {
@@ -48,22 +60,18 @@ void updateWaterLevel(int level) {
   digitalWrite(level5, level & 0x10);
 }
 
-void buzz() {
-  tone(buzzerPin, 784);
-  delay(300);
-  noTone(buzzerPin);
-  delay(300);
-}
-
+int lastLevel = -1;
 void loop() {
   int level = receive();
-  if (level != -1) {
+  if (lastLevel != level && level != -1) {
+    lastLevel = level;
     level = level & 0x1F;
-    // Serial.print("received:");
-    // Serial.println(level);
-    // Serial.println();
+    Serial.println(level);
     updateWaterLevel(level);
     switchEvent(level);
-    // mqtt_loop();
+  }
+  mqtt_loop();
+  if (switchOnStatus) {
+    tone(buzzerPin, buzzerFrequency);
   }
 }

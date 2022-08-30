@@ -1,4 +1,3 @@
-
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
@@ -6,7 +5,7 @@ const char* ssid = "Trekkers_Hut";
 const char* password = "Alcrai.Ace1992";
 const char* mqtt_server = "raspberrypi.local";
 int server_port = 1883;
-
+bool forcedSwitchOn = false;
 WiFiClient espClient;
 PubSubClient client(espClient);
 unsigned long lastMsg = 0;
@@ -41,21 +40,29 @@ void setup_wifi() {
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print(topic);
   String message;
-  
+
   for (int i = 0; i < length; i++) {
     message += (char)payload[i];
   }
   Serial.print(":");
   Serial.println(message);
+  if (message.equals("on")) {
+    forcedSwitchOn = true;
+    Serial.println("forcedSwitchOn");
+    switchOn();
+  } else {
+    Serial.println("forcedSwitchOff");
+    switchOff();
+  }
 }
 
 void reconnect() {
   while (!client.connected()) {
     Serial.println("Attempting MQTT connection...");
     String clientId = "ESPClient8266";
-      clientId += String(random(0xffff), HEX);
+    clientId += String(random(0xffff), HEX);
 
-  WiFi.mode(WIFI_STA);
+    WiFi.mode(WIFI_STA);
     if (client.connect(clientId.c_str())) {
       Serial.println("connected");
       client.publish(onlineTopic, "true");
