@@ -1,21 +1,19 @@
-#include <RH_ASK.h>
-#ifdef RH_HAVE_HARDWARE_SPI
-#include <SPI.h>  // Not actually used but needed to compile
-#endif
+#include <RCSwitch.h>
 
-RH_ASK driver(2000, D4, D2, D1);  // ESP8266 or ESP32: do not use pin 11 or 2
-#define INT2POINTER(a) ((char*)(intptr_t)(a))
+RCSwitch mySwitch = RCSwitch();
+
+// RH_ASK driver(2000, D4, D2, D1);  // ESP8266 or ESP32: do not use pin 11 or 2
+// #define INT2POINTER(a) ((char*)(intptr_t)(a))
 
 void setup_receiver() {
-  driver.init();
+  // driver.init();
+  mySwitch.enableReceive(D4);
 }
 
 int receive() {
-  uint8_t buf[RH_ASK_MAX_MESSAGE_LEN];
-  uint8_t buflen = sizeof(buf);
-  if (driver.recv(buf, &buflen))  // Non-blocking
-  {
-    int level = String((char *)buf).toInt();
+  if (mySwitch.available()) {
+    int level = mySwitch.getReceivedValue();
+    mySwitch.resetAvailable();
     return level;
   } else {
     return -1;

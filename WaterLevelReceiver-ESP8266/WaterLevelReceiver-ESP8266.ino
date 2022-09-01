@@ -63,9 +63,12 @@ void updateWaterLevel(int level) {
 int lastLevel = -1;
 void loop() {
   int level = receive();
+  if (level != -1)
+    Serial.println(level);
   if (lastLevel != level && level != -1) {
-    lastLevel = level;
+
     level = level & 0x1F;
+    lastLevel = level;
     Serial.println(level);
     updateWaterLevel(level);
     switchEvent(level);
