@@ -63,6 +63,7 @@ void updateWaterLevel(int level) {
 
 int lastLevel = -1;
 void loop() {
+  wifi_connect();
   int level = receive();
   if (level != -1)
     Serial.println(level);

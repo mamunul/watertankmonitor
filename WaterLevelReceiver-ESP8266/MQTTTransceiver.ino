@@ -34,7 +34,7 @@ void callback(char* topic, byte* payload, unsigned int length) {
 }
 
 void reconnect() {
-  while (!mqtt_client.connected()) {
+  if (WiFi.status() == WL_CONNECTED && !mqtt_client.connected()) {
     Serial.println("Attempting MQTT connection...");
     String clientId = "ESPClient8266";
     clientId += String(random(0xffff), HEX);
@@ -53,6 +53,7 @@ void reconnect() {
 }
 
 void mqtt_setup() {
+  // Serial.println(espClient.status());
   mqtt_client.setServer(mqtt_server, server_port);
   mqtt_client.setCallback(callback);
 }
