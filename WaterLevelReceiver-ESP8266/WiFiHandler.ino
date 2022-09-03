@@ -8,7 +8,7 @@ void setup_wifi() {
   WiFi.mode(WIFI_STA);  // explicitly set mode, esp defaults to STA+AP
   // put your setup code here, to run once:
   //reset settings - wipe credentials for testing
-  wm.resetSettings();
+  // wm.resetSettings();
   wm.addParameter(&custom_mqtt_server);
   wm.addParameter(&custom_mqtt_port);
   wm.addParameter(&custom_mqtt_key);
