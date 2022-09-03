@@ -1,41 +1,18 @@
 #include <ESP8266WiFi.h>
 #include <PubSubClient.h>
 
-const char* ssid = "Trekkers_Hut";
-const char* password = "Alcrai.Ace1992";
+
 const char* mqtt_server = "raspberrypi.local";
 int server_port = 1883;
 bool forcedSwitchOn = false;
 WiFiClient espClient;
-PubSubClient client(espClient);
+PubSubClient mqtt_client(espClient);
 unsigned long lastMsg = 0;
 int msg = 0;
 int value = 0;
 
 char* switchTopic = "topics/seton";
 char* onlineTopic = "topics/online";
-
-void setup_wifi() {
-
-  delay(10);
-  Serial.println();
-  Serial.print("Connecting to ");
-  Serial.println(ssid);
-
-  WiFi.mode(WIFI_STA);
-  WiFi.begin(ssid, password);
-
-  while (WiFi.status() != WL_CONNECTED) {
-    delay(500);
-    Serial.print(".");
-  }
-  randomSeed(micros());
-
-  Serial.println("");
-  Serial.println("WiFi connected");
-  Serial.println("IP address: ");
-  Serial.println(WiFi.localIP());
-}
 
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print(topic);
@@ -57,33 +34,32 @@ void callback(char* topic, byte* payload, unsigned int length) {
 }
 
 void reconnect() {
-  while (!client.connected()) {
+  while (!mqtt_client.connected()) {
     Serial.println("Attempting MQTT connection...");
     String clientId = "ESPClient8266";
     clientId += String(random(0xffff), HEX);
 
     WiFi.mode(WIFI_STA);
-    if (client.connect(clientId.c_str())) {
+    if (mqtt_client.connect(clientId.c_str())) {
       Serial.println("connected");
-      client.publish(onlineTopic, "true");
-      bool status = client.subscribe(switchTopic);
+      mqtt_client.publish(onlineTopic, "true");
+      bool status = mqtt_client.subscribe(switchTopic);
     } else {
       Serial.print("failed, rc=");
-      Serial.print(client.state());
+      Serial.print(mqtt_client.state());
       delay(5000);
     }
   }
 }
 
 void mqtt_setup() {
-  setup_wifi();
-  client.setServer(mqtt_server, server_port);
-  client.setCallback(callback);
+  mqtt_client.setServer(mqtt_server, server_port);
+  mqtt_client.setCallback(callback);
 }
 
 void mqtt_loop() {
-  if (!client.connected()) {
+  if (!mqtt_client.connected()) {
     reconnect();
   }
-  client.loop();
+  mqtt_client.loop();
 }

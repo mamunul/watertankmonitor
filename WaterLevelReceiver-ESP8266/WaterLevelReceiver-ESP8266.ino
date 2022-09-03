@@ -10,6 +10,7 @@ int buzzerFrequency = 784;
 bool switchOnStatus = false;
 void setup() {
   Serial.begin(115200);  // Debugging only
+  setup_wifi();
   showWaterLevelSetup();
   swtchSetup();
   setup_receiver();
