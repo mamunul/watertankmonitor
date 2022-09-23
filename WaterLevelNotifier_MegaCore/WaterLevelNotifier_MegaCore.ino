@@ -7,10 +7,8 @@ void setup() {
 }
 
 void loop() {
-  int level = readWaterLevel();
-  level = level & 0x1F;
-  if (level == 0) level = 128;
-  Serial.println(level);
-  rf_send(level);
+  long distance = measure_distance();
+  Serial.println(distance);
+  rf_send(distance);
   delay(1000);
 }

@@ -17,8 +17,8 @@ void rf_setup() {
   // mySwitch.setRepeatTransmit(15);
 }
 
-void rf_send(int message) {
-  mySwitch.send(message, 8);
+void rf_send(long message) {
+  mySwitch.send(message, 16);
   delay(100);
   // driver.send((uint8_t *)message, strlen(message));
   // driver.waitPacketSent();

@@ -6,7 +6,7 @@ void distance_sensor_setup() {
   pinMode(echoPin, INPUT);   // Sets the echoPin as an INPUT
 }
 
-int measure_distance() {
+long measure_distance() {
   // Clears the trigPin condition
   digitalWrite(trigPin, LOW);
   delayMicroseconds(2);
@@ -17,6 +17,6 @@ int measure_distance() {
   // Reads the echoPin, returns the sound wave travel time in microseconds
   long duration = pulseIn(echoPin, HIGH);
   // Calculating the distance
-  int distance_cm = duration * 0.034 / 2;  // Speed of sound wave divided by 2 (go and back)
+  long distance_cm = duration * 0.034 / 2;  // Speed of sound wave divided by 2 (go and back)
   return distance_cm;
 }
