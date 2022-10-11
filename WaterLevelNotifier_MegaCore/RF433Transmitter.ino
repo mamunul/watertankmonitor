@@ -5,7 +5,7 @@ RCSwitch mySwitch = RCSwitch();
 void rf_setup() {
   // driver.init();
   // Transmitter is connected to Arduino Pin #10
-  mySwitch.enableTransmit(PIN_PB7);
+  mySwitch.enableTransmit(PIN_PB0);
 
   // Optional set protocol (default is 1, will work for most outlets)
   // mySwitch.setProtocol(2);
