@@ -1,3 +1,7 @@
+extern "C" {
+#include "user_interface.h"
+}
+
 int level1 = D8;
 int level2 = D7;
 int level3 = D6;
@@ -61,12 +65,40 @@ void updateWaterLevel(int level) {
   digitalWrite(level5, level & 0x10);
 }
 
+void sleep() {
+  wifi_fpm_set_sleep_type(LIGHT_SLEEP_T);
+  wifi_fpm_open();
+
+  // register one or more wake-up interrupts
+  gpio_pin_wakeup_enable(D4, GPIO_PIN_INTR_HILEVEL);
+  //gpio_pin_wakeup_enable(D3, GPIO_PIN_INTR_LOLEVEL);
+  // ...
+
+  // function for clearing all previously set wake interrupts:
+  //gpio_pin_wakeup_disable();
+
+  // optionally, can register a callback function using
+  //wifi_fpm_set_wakeup_cb(function_name);
+
+  // actually enter light sleep:
+  // the special timeout value of 0xFFFFFFF triggers indefinite
+  // light sleep (until any of the GPIO interrupts above is triggered)
+  wifi_fpm_do_sleep(0xFFFFFFF);
+  // the CPU will only enter light sleep on the next idle cycle, which
+  // can be triggered by a short delay()
+  delay(1000);
+}
+
 int lastLevel = -1;
 void loop() {
   wifi_connect();
   int level = receive();
-  if (level != -1)
-    Serial.println(level);
+
+  // if (level != -1) {
+  //   Serial.print("Received:");
+  //   Serial.println(level);
+  // }
+
   if (lastLevel != level && level != -1) {
 
     level = level & 0x1F;
@@ -79,4 +111,5 @@ void loop() {
   if (switchOnStatus) {
     tone(buzzerPin, buzzerFrequency);
   }
+  sleep();
 }
