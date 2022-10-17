@@ -10,9 +10,9 @@ void setup_receiver() {
   mySwitch.enableReceive(D4);
 }
 
-int receive() {
+long receive() {
   if (mySwitch.available()) {
-    int level = mySwitch.getReceivedValue();
+    long level = mySwitch.getReceivedValue();
     mySwitch.resetAvailable();
     return level;
   } else {

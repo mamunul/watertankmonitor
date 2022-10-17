@@ -89,10 +89,10 @@ void sleep() {
   delay(1000);
 }
 
-int lastLevel = -1;
+long lastLevel = -1;
 void loop() {
   wifi_connect();
-  int level = receive();
+  long level = receive();
 
   // if (level != -1) {
   //   Serial.print("Received:");
