@@ -11,13 +11,14 @@ void sleep_setup() {
   TIFR |= 1 << TOV2;    //bit_set(TIFR, TOV2);                                //Clear TOV2
 
   TCNT2 = 0;                                          //Init Timer Count 2
-  TCCR2 = ((1 << CS22) | (1 << CS21) | (1 << CS20));  // Timer Clock = system clock / 1024
+  TCCR2 |= ((1 << CS22) | (1 << CS21) | (1 << CS20));  // Timer Clock = system clock / 1024
   // TCCR2 = (1 << CS20);  // Timer Clock = system clock ;3.5 seconds interval with 455 crystal without capacitors
   // TCCR2 = (1 << CS22);  // Timer Clock = system clock / 64
   sei();  //enable_interrupts() <=> bit_set(SREG,7);
 }
 
-void sleepNow() {
+void sleepNow() { 
+  sleep_setup();
   set_sleep_mode(SLEEP_MODE_PWR_SAVE);  // sleep mode is set here
   sleep_enable();
 
@@ -27,6 +28,8 @@ void sleepNow() {
 }
 
 void sleepForOneMinute() {
-  for (int i = 0; i < 100; i++)
-    sleepNow();
+  // for (int i = 0; i < 3; i++){// for some unknown reason loop not working
+    sleepNow();//each sleep takes 15seconds with 32K Crystal and clock / 1024 scale, without pf capacitor
+    // sleepNow();
+  // }
 }

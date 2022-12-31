@@ -1,5 +1,5 @@
-#define echoPin PIN_PD3  // attach pin D2 Arduino to pin Echo of HC-SR04
-#define trigPin PIN_PD4  //attach pin D3 Arduino to pin Trig of HC-SR04
+#define echoPin PIN_PD4  // attach pin D2 Arduino to pin Echo of HC-SR04
+#define trigPin PIN_PD3  //attach pin D3 Arduino to pin Trig of HC-SR04
 
 void distance_sensor_setup() {
   pinMode(trigPin, OUTPUT);  // Sets the trigPin as an OUTPUT

@@ -3,7 +3,6 @@
 void setup() {
   // Serial.begin(9600);
   rf_setup();
-  sleep_setup();
   distance_sensor_setup();
 }
 // long distance = 5;
