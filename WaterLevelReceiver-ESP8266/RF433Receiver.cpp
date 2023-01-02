@@ -1,4 +1,4 @@
-#include <RCSwitch.h>
+#include "RF433Receiver.h"
 
 RCSwitch mySwitch = RCSwitch();
 

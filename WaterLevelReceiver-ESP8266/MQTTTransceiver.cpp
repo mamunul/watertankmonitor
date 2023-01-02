@@ -1,5 +1,4 @@
-#include <ESP8266WiFi.h>
-#include <PubSubClient.h>
+#include "MQTTTransceiver.h"
 
 
 const char* mqtt_server = "raspberrypi.local";
@@ -14,6 +13,9 @@ int value = 0;
 char* switchTopic = "topics/seton";
 char* onlineTopic = "topics/online";
 
+static void (*SwitchOn)(void);
+static void (*SwitchOff)(void);
+
 void callback(char* topic, byte* payload, unsigned int length) {
   Serial.print(topic);
   String message;
@@ -26,10 +28,10 @@ void callback(char* topic, byte* payload, unsigned int length) {
   if (message.equals("on")) {
     forcedSwitchOn = true;
     Serial.println("forcedSwitchOn");
-    switchOn();
+    SwitchOn();
   } else {
     Serial.println("forcedSwitchOff");
-    switchOff();
+    SwitchOff();
   }
 }
 
@@ -52,8 +54,10 @@ void reconnect() {
   }
 }
 
-void mqtt_setup() {
+void mqtt_setup(void (*switchOn)(void), void (*switchOff)(void)) {
   // Serial.println(espClient.status());
+  SwitchOn = switchOn;
+  SwitchOff = switchOff;
   mqtt_client.setServer(mqtt_server, server_port);
   mqtt_client.setCallback(callback);
 }

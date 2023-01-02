@@ -1,6 +1,10 @@
 extern "C" {
 #include "user_interface.h"
 }
+#include "RF433Receiver.h"
+#include "MQTTTransceiver.h"
+#include "WiFiHandler.h"
+#include "OTA.h"
 
 int level1 = D8;
 int level2 = D7;
@@ -18,7 +22,7 @@ void setup() {
   showWaterLevelSetup();
   swtchSetup();
   setup_receiver();
-  mqtt_setup();
+  mqtt_setup(switchOn,switchOff);
   switchOnStatus = false;
 }
 
