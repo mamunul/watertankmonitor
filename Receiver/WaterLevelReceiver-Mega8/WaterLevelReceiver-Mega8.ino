@@ -1,28 +1,16 @@
-extern "C" {
-#include "user_interface.h"
-}
 #include "RF433Receiver.h"
-#include "MQTTTransceiver.h"
-#include "WiFiHandler.h"
-#include "OTA.h"
 
-int level1 = D8;
-int level2 = D7;
-int level3 = D6;
-int level4 = D5;
-int level5 = D3;
+#include "pin_map.h"
 
-int switchRelay = D0;
-int buzzerPin = D1;  //GPIO_ID_PIN(1);
 int buzzerFrequency = 784;
 bool switchOnStatus = false;
+
 void setup() {
   Serial.begin(115200);  // Debugging only
-  setup_wifi();
+
   showWaterLevelSetup();
   swtchSetup();
-  setup_receiver();
-  mqtt_setup(switchOn,switchOff);
+  setup_receiver(ReceivePIN);
   switchOnStatus = false;
 }
 
@@ -69,33 +57,10 @@ void updateWaterLevel(int level) {
   digitalWrite(level5, level & 0x10);
 }
 
-void sleep() {
-  wifi_fpm_set_sleep_type(LIGHT_SLEEP_T);
-  wifi_fpm_open();
 
-  // register one or more wake-up interrupts
-  gpio_pin_wakeup_enable(D4, GPIO_PIN_INTR_HILEVEL);
-  //gpio_pin_wakeup_enable(D3, GPIO_PIN_INTR_LOLEVEL);
-  // ...
-
-  // function for clearing all previously set wake interrupts:
-  //gpio_pin_wakeup_disable();
-
-  // optionally, can register a callback function using
-  //wifi_fpm_set_wakeup_cb(function_name);
-
-  // actually enter light sleep:
-  // the special timeout value of 0xFFFFFFF triggers indefinite
-  // light sleep (until any of the GPIO interrupts above is triggered)
-  wifi_fpm_do_sleep(0xFFFFFFF);
-  // the CPU will only enter light sleep on the next idle cycle, which
-  // can be triggered by a short delay()
-  delay(1000);
-}
 
 long lastLevel = -1;
 void loop() {
-  wifi_connect();
   long level = receive();
 
   // if (level != -1) {
@@ -111,9 +76,8 @@ void loop() {
     updateWaterLevel(level);
     switchEvent(level);
   }
-  mqtt_loop();
+
   if (switchOnStatus) {
     tone(buzzerPin, buzzerFrequency);
   }
-  sleep();
 }

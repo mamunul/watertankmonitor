@@ -54,10 +54,12 @@ void reconnect() {
   }
 }
 
-void mqtt_setup(void (*switchOn)(void), void (*switchOff)(void)) {
+void mqtt_setup(void (*switchOn)(void), void (*switchOff)(void),char* server,int port) {
   // Serial.println(espClient.status());
   SwitchOn = switchOn;
   SwitchOff = switchOff;
+  mqtt_server = server;
+  server_port = port;
   mqtt_client.setServer(mqtt_server, server_port);
   mqtt_client.setCallback(callback);
 }

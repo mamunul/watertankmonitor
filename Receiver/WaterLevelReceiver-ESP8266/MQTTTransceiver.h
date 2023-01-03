@@ -5,7 +5,7 @@
 
 void callback(char* topic, byte* payload, unsigned int length);
 void reconnect();
-void mqtt_setup(void (*switchOn)(void), void (*switchOff)(void)); 
+void mqtt_setup(void (*switchOn)(void), void (*switchOff)(void),char* server,int port);
 void mqtt_loop();
 
 #endif
